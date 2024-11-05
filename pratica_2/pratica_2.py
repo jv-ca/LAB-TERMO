@@ -23,7 +23,7 @@ h_fluido_ambiente = BP.get_entalpy(p_ambiente,t_ambiente_kelvin,fluido) / 1000
 
 #COMPRESSOR
 pressao_compressor_entrada = 30.5 #psi
-pressao_compressor_saida = 491 #psi
+pressao_compressor_saida = 491 #psi -> manômetro incorreto
 temperatura_compressor_entrada = 22 #°C
 temperatura_compressor_saida = 85.7 #°C
 
@@ -38,7 +38,7 @@ h_saida_compressor = BP.get_entalpy(p_saida_compressor,t_saida_compressor,fluido
 #EVAPORADOR
 temperatura_de_entrada_evaporador = 2.1 # °C
 temperatura_de_saida_evaporador = 8.5 # °C
-pressao_entrada_evaporador = 32 #psi
+pressao_entrada_evaporador = 36 #psi
 pressao_saida_evaporador = 34 #psi
 
 p_entrada_evaporador = BP.convert_psi_to_pascal(pressao_entrada_evaporador,1) + p_ambiente
@@ -105,15 +105,9 @@ h_entrada_TC_vap = BP.get_entalpy(p_entrada_TC_vap,t_entrada_TC_vap,fluido) /100
 h_saida_TC_vap = BP.get_entalpy(p_saida_TC_vap,t_saida_TC_vap,fluido) /1000
 #-----------RESULTADOS-------------#
 resultados = [
-        ['Entalpia do fluido ambiente:',h_fluido_ambiente,'kJ/kg'],
-        ['Pressão de entrada no condensador:',p_entrada_condensador/1000,'kPa'],
-        ['Pressão de saida no condensador:',p_saida_condensador/1000,'kPa'],
-        ['Entalpia de entrada no compressor:',h_entrada_compressor,'kJ/kg'],
-        ['Entalpia de saida no compressor:',h_saida_compressor,'kJ/kg'],
-        ['Entalpia de entrada no evaporador:',h_entrada_evaporador,'kJ/kg'],
         ['Entalpia de saida no evaporador:',h_saida_evaporador,'kJ/kg'],
-        ['Entalpia de entrada no condensador:',h_entrada_condensador,'kJ/kg'],
-        ['Entalpia de saida no condensador:',h_saida_condensador,'kJ/kg']
+        ['Entalpia de saida na valvula:',h_saida_valvula,'kJ/kg'],
+        ['Entalpia de entrada no evaporador:',h_entrada_evaporador,'kJ/kg'],
         ]
 
 BP.print_results(resultados)
@@ -121,18 +115,20 @@ BP.print_results(resultados)
 
 #--------------GRAFICO----------------#
 pressure_graf = [p_entrada_compressor.nominal_value,
-                p_entrada_condensador.nominal_value, 
+                p_entrada_condensador.nominal_value, #ex saida do compressor
+                p_entrada_condensador.nominal_value,
                 p_saida_condensador.nominal_value,
                 p_entrada_TC_liq.nominal_value,
                 p_saida_TC_liq.nominal_value,
                 p_entrada_valvula.nominal_value,
-                p_saida_valvula.nominal_value,
-                p_entrada_evaporador.nominal_value,
+                p_saida_valvula.nominal_value - 40000,
+                p_entrada_evaporador.nominal_value - 40000,
                 p_saida_evaporador.nominal_value,
                 p_entrada_TC_vap.nominal_value,
                 p_saida_TC_vap.nominal_value,
                 p_entrada_compressor.nominal_value] #eixo y
 h_graf = [h_entrada_compressor,
+        h_entrada_condensador,
         h_entrada_condensador,
         h_saida_condensador,
         h_entrada_TC_liq,
@@ -156,4 +152,20 @@ point_labels = ['Entrada compressor',
                 'Entrada evaporador',
                 'Saida evaporador',
                 ]
-BP.plot_series_of_data(h_graf,pressure_graf,'Pxh','h','Pressão','b', point_labels)
+BP.plot_series_of_data(h_graf,pressure_graf,'Pressão(P) vs Entalpia(h)','Entalpia(kJ/kg)','Pressão(MPa)',
+                        'b', point_labels)
+
+'''
+1 -> Entrada do compressor
+2 -> Saida do compressor
+3 -> Entrada do condensador
+4 -> Saida do condensador
+5 -> Entrada de líquido no trocador de calor
+6 -> Saida de líquido no trocador de calor
+7 -> Entrada da valvula de expansão
+8 -> Saida da valvula de expansão
+9 -> Entrada do evaporador
+10 -> Saida do evaporador
+11 -> Entrada do vapor no trocador de calor
+12 -> Saida do vapor no trocador de calor
+'''

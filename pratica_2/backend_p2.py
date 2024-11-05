@@ -50,13 +50,17 @@ def plot_series_of_data(x,y,title,x_lable,y_lable,color,point_labels):
     # Plotando a curva de sino no gráfico de Pressão vs Entalpia
     h_liq, h_vap, P_liq, P_vap = R12_curve_Pxh()
     plt.figure(figsize=(10, 6))
-    plt.plot(x, y, marker= 'x',linestyle='-.', color=f'{color}', label=f'{y_lable} vs {x_lable}')
-    plt.plot(h_liq, P_liq, linestyle='-', color=f'red', label=f'{y_lable} vs {x_lable}')
+    plt.plot(x, y, marker= 'o',linestyle='-', color=f'{color}', label=f'{y_lable} vs {x_lable}')
+    plt.plot(h_liq, P_liq, linestyle='-', color=f'red', label=f'Curva de sino do R12')
     plt.plot(h_vap, P_vap, linestyle='-', color=f'red')
     # Adicionando uma anotação em cada ponto
     for i, (xi, yi) in enumerate(zip(x, y)):
-        # Alterna o valor de 'xytext' entre (5, 5) e (5, -15) para posicionar acima e abaixo
-        offset = (5, 5) if i % 2 == 0 else (5, -15)
+        if i == len(x) - 1:  # Ignora o último ponto
+            break
+        # Alterna o valor de 'xytext' entre (5, 5) e (5, -15)
+        offset = (0, 10) if i % 2 == 0 else (0, -8)
+        if i == 11:
+            offset = (0,-8)
         plt.annotate(str(i + 1),          # Rótulo numérico (1, 2, 3, ...)
                     (xi, yi),            # Coordenadas do ponto
                     textcoords="offset points", # Tipo de posicionamento
@@ -104,4 +108,3 @@ def R12_curve_Pxh():
     P_vap = np.array(P_vap).tolist()
     return h_liq,h_vap,P_liq,P_vap
 
-R12_curve_Pxh()
