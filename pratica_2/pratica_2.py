@@ -152,9 +152,23 @@ point_labels = ['Entrada compressor',
                 'Entrada evaporador',
                 'Saida evaporador',
                 ]
-BP.plot_series_of_data(h_graf,pressure_graf,'Pressão(P) vs Entalpia(h)','Entalpia(kJ/kg)','Pressão(MPa)',
-                        'b', point_labels)
+#BP.plot_series_of_data(h_graf,pressure_graf,'Pressão(P) vs Entalpia(h)','Entalpia(kJ/kg)','Pressão(MPa)',
+#                        'b', point_labels)
 
+'''
+A -> Entrada valvula
+B -> Entrada evaporador
+C'-> Saída do evaporador
+C-> Entrada do compressor
+D-> Saida do compressor (considerar entrada do condensador)
+'''
+calor_evaporador = h_saida_evaporador - h_entrada_evaporador
+trabalho_compressor = h_entrada_condensador - h_entrada_compressor
+
+COP = calor_evaporador/trabalho_compressor
+print(calor_evaporador)
+print(trabalho_compressor)
+print(f'COP: {COP}')
 '''
 1 -> Entrada do compressor
 2 -> Saida do compressor
